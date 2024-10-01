@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Лицо{% endblock %}
+
+{% block style %} <link rel="stylesheet" href="{% static 'info.css' %}"> {% endblock %}
+
+{% block content %}
+<header class="header">
+    <div class="logo">
+        <a href="/" class="register-link"></a>
+    </div>
+	<div class="right-push"></div>
+    <div class="right-menu">
+		{% comment %} <a href="/" class="register-link">Физическое/Юридическое лица</a>  {% endcomment %}
+    </div>
+	</header>
+    <h1 class="korz-line">
+        <div class="right-push"></div>
+        <div class="right-menu">
+            <a href="{% url 'company'%}" class="register-link">Компания ●3</a>
+        </div>
+    </h1>
+    <div class="container">
+        <div class="card_face">
+            <img src="{{image}}" alt="Физическое/Юридическое лицо" class="face-image">
+            <div class="card-details">
+                <h2>{{name}}</h2>
+                <p class="type">{{type}}</p>
+                <p>{{number}}</p>
+                <p>{{info}}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
