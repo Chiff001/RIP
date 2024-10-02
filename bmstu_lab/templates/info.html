@@ -19,17 +19,21 @@
     <h1 class="korz-line">
         <div class="right-push"></div>
         <div class="right-menu">
-            <a href="{% url 'company'%}" class="register-link">Компания ●3</a>
+            <a href="{% url 'company'%}" class="register-link">Компания ●{{count}}</a>
         </div>
     </h1>
     <div class="container">
         <div class="card_face">
-            <img src="{{image}}" alt="Физическое/Юридическое лицо" class="face-image">
+            {% for element in data %}
+            <img src="{{element.image}}" alt="Физическое/Юридическое лицо" class="face-image">
             <div class="card-details">
-                <h2>{{name}}</h2>
-                <p class="type">{{type}}</p>
-                <p>{{number}}</p>
-                <p>{{info}}</p>
+                <h2>{{element.name}}</h2>
+                <p class="type">{{element.type}}</p>
+                <p>{{element.number}}</p>
+                <p>{{element.info}}</p>
+                {% empty %}
+                    <p>Список пуст</p>
+            {% endfor %}
             </div>
         </div>
     </div>

@@ -38,29 +38,59 @@ data = [
 
 def GetCards(request):
     return render(request, 'start.html', {
-        'data': data
+        'data': Personalities.objects.all(),
+        'count': Application.objects.all().count()
     })
 
-def GetCard(request, id):
-    return render(request, 'info.html', data[id])
+def GetCard(request, sel_id):
+    return render(request, 'info.html', {
+        'data': Personalities.objects.filter(id=sel_id),
+        'count': Application.objects.all().count()
+    })
 
 def GetKorz(request):
     UR = []
     FIZ = []
-    for i in data:
-        if i['id'] in cart_id and UR == []:
-            UR.append(i)
-        elif i['id'] in cart_id:
-            FIZ.append(i)
+    for i in Application.objects.all():
+        for j in Company.objects.all():
+            if i.company_app == j:
+                UR.append(j)
+    if UR != []:
+        for i in CompanyUser.objects.all():
+            if i.company == UR[0]:
+                FIZ.append(i)
     return render(request, 'korz.html', {'cards_UR': UR, 'cards_FIZ': FIZ})
 
 def SearchCards(request):
     input_text = str(request.POST['text'])
     result = []
-    for i in data:
-        if input_text in i['name']:
+    for i in Personalities.objects.all():
+        if input_text in i.name:
             result.append(i)
     return render(request, 'start.html', {
         'data': result,
         'search_text': input_text
     })
+
+def SearchComp(request):
+    input_text = str(request.POST['text'])
+    result = []
+    for i in Company.objects.all():
+        if input_text in i.company_name:
+            for i in Company.objects.filter(company_name=i.company_name):
+                item = Application(company_app=i)
+                item.save()
+    return GetKorz(request)
+
+def AddApp(request, sel_id):
+    for i in Personalities.objects.filter(id=sel_id):
+        comp_name = i.name
+    for i in Company.objects.filter(company_name=comp_name):
+        item = Application(company_app=i)
+        item.save()
+    data = {'data': Personalities.objects.filter(id=sel_id)}
+    return render(request, 'info.html', data)
+
+def DelApp(request):
+    Application.objects.all().delete()
+    return render(request, 'korz.html', {'cards_UR': [], 'cards_FIZ': []})
