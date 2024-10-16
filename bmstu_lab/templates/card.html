@@ -3,7 +3,9 @@
     <h2>{{element.name}}</h2>
     <p>{{element.type}}</p>
     <a href="{% url 'card_url' element.id %}" class="button">Подробнее</a>
-    {% if element.type == "Юридическое лицо" %}
-        <a href="{% url 'card_add' element.id %}" class="button">Добавить заявку</a>
-    {%endif%}
+    <form method="post" action="Add_to_company/">
+        {% csrf_token %}
+        <input type="hidden" value="{{element.id}}" name="writing_personalities">
+        <button class="button" type="">Добавить заявку</button>
+    </form>
 </div>

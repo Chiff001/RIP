@@ -14,14 +14,14 @@
 	</header>
     <main>
         <h1 class="search-line">
-            <form action="{% url 'searchOwners' %}" method="post" enctype="multipart/form-data" class="search">
+            <form action="/" method="post" enctype="multipart/form-data" class="search">
                 {% csrf_token %}
-                <input name="text" type="text" value="{{search_text}}" class="search-input"><br><br>
+                <input name="personalities-name" type="text" value="{{personalities_name}}" class="search-input"><br><br>
                 <input type="submit" value="Поиск" class="search-button">
         
             </form>
             <div>
-                <a href="{% url 'company'%}" class="register-link">Компания ●{{count}}</a>
+                <a href="{% url 'Company' company_id%}" class="register-link">Компания ●{{count}}</a>
             </div>
         </h1>
         <div class="card-grid">

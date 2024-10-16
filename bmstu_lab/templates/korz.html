@@ -14,34 +14,28 @@
     </div>
 </header>
     <h1 class="search-del-line">
-        <form action="{% url 'searchCompanies' %}" method="post" enctype="multipart/form-data" class="search2">
-            {% csrf_token %}
-            <input name="text" type="text" value="{{search_text}}" class="search2-input"><br><br>
-            <input type="submit" value="Поиск" class="search2-button">
-
-        </form>
+        <div class="right-push"></div>
+        <div class="right-menu">
         <div>
-            <a href="{% url 'card_del'%}" class="register-link">Удалить заявки</a>
+            <a href="{% url 'card_del' company_id%}" class="register-link">Удалить заявки</a>
         </div>
     </h1>
     <div class="container_UR">
-        <div class="total">
-            <h2>Юридическое лицо:</h2>
-        </div>
-        {% for card in cards_UR %}
-                {% include 'korz_card_UR.html' with element=card %}
-                {% empty %}
-                    <p>Список пуст</p>
-        {% endfor %}
-        </div>
+        <form action="/" method="post" enctype="multipart/form-data" class="">
+            {% csrf_token %}
+            <p><b>Название компании:</b><br>
+            <input name="company-name" type="text" value="{{company_name}}" class="search2-input"><br><br>
+            <p><b>Описание компании:</b><br>
+            <input name="company-description" type="text" value="{{company_description}}" class="search2-input"><br><br>
+    
+        </form>
     </div>
-
     <div class="container_FIZ">
         <div class="total">
-            <h2>Физические лица:</h2>
+            <h2>Собственники:</h2>
         </div>
-        {% for card in cards_FIZ %}
-                {% include 'korz_card_FIZ.html' with element=card %}
+        {% for card in data %}
+                {% include 'korz_card.html' with element=card %}
                 {% empty %}
                     <p>Список пуст</p>
         {% endfor %}

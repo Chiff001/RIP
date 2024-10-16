@@ -4,7 +4,6 @@ class Personalities(models.Model):
     name = models.CharField(max_length=255)  # ФИО/Название ООО
     number = models.TextField(blank=True)  # ИНН/ОГРН
     info = models.TextField(blank=True)  # Описание
-    description = models.TextField(blank=True)  # Ключевая информация
     type = models.TextField()  # Тип лица
     image = models.TextField() # URL изображения 
 
@@ -14,7 +13,11 @@ class Personalities(models.Model):
 
 class Company(models.Model):
     company_name = models.TextField(blank=True)
-    description = models.TextField(blank=True)  # Имя компании
+    description = models.TextField(blank=True)
+    accepted_date = models.DateField(blank=True, null=True)
+    created_date = models.DateField(blank=True, null=True)
+    status = models.IntegerField()
+    submited_date = models.DateField(blank=True, null=True)  # Имя компании
 
     class Meta:
         db_table = 'CompanyApp'
@@ -23,15 +26,7 @@ class Company(models.Model):
 class CompanyUser(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)  # Связь с заказом
     user_id = models.ForeignKey(Personalities, on_delete=models.CASCADE)
-    dolya = models.TextField(blank=True)  # Доля акций
+    kol_akc = models.IntegerField()  # Кол-во акций
 
     class Meta:
         db_table = 'CompanyUser'
-
-
-class Application(models.Model):
-    company_app = models.ForeignKey(Company, on_delete=models.CASCADE)  # Связь с заказом
-
-    class Meta:
-        db_table = 'Application'
-
