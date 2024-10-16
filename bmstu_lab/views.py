@@ -2,7 +2,20 @@ from django.shortcuts import render
 from bmstu_lab.models import *
 
 
-cart_id = [0, 1, 2]
+cart_id = [{
+    "company_name": "Starapp",
+    "company_desscription": "Перспективная компания",
+    "items": [{
+        "item_id": 1,
+        "kol_akc": 12
+    }, {
+        "item_id": 5,
+        "kol_akc": 3
+    }, {
+        "item_id": 8,
+        "kol_akc": 1
+    }],
+},]
 data = [
         {'name': 'ООО "Интернет решения"', 
          'number': 'Номер ОГРН: 1027739244741',
@@ -45,14 +58,17 @@ def GetCard(request, id):
     return render(request, 'info.html', data[id])
 
 def GetKorz(request):
-    UR = []
-    FIZ = []
+    result = cart_id[0]
+    result["kol_akc"] = 0
     for i in data:
-        if i['id'] in cart_id and UR == []:
-            UR.append(i)
-        elif i['id'] in cart_id:
-            FIZ.append(i)
-    return render(request, 'korz.html', {'cards_UR': UR, 'cards_FIZ': FIZ})
+        for j in result["items"]:
+            if i['id'] == j['item_id']:
+                j["name"] = i["name"]
+                j["number"] = i["number"]
+                j["info"] = i["info"]
+                j["image"] = i["image"]
+                result["kol_akc"] += j["kol_akc"]
+    return render(request, 'korz.html', result)
 
 def SearchCards(request):
     input_text = str(request.POST['text'])
