@@ -18,15 +18,14 @@
     </div>
 	</header>
     <div class="container_UR">
-        <div class="total">
-            <h2>Юридическое лицо:</h2>
-        </div>
-        {% for card in cards_UR %}
-                {% include 'korz_card.html' with element=card %}
-                {% empty %}
-                    <p>Список пуст</p>
-        {% endfor %}
-        </div>
+        <form action="/" method="post" enctype="multipart/form-data" class="">
+            {% csrf_token %}
+            <p><b>Название компании:</b><br>
+            <input name="company-name" type="text" value="{{company_name}}" class="search2-input"><br><br>
+            <p><b>Описание компании:</b><br>
+            <input name="company-description" type="text" value="{{company_description}}" class="search2-input"><br><br>
+    
+        </form>
     </div>
 
     <div class="container_FIZ">
