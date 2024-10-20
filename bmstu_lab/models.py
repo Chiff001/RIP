@@ -2,10 +2,10 @@ from django.db import models
 
 class Personalities(models.Model):
     name = models.CharField(max_length=255)  # ФИО/Название ООО
-    number = models.TextField(blank=True)  # ИНН/ОГРН
-    info = models.TextField(blank=True)  # Описание
+    number = models.TextField()  # ИНН/ОГРН
+    info = models.TextField()  # Описание
     type = models.TextField()  # Тип лица
-    image = models.TextField() # URL изображения 
+    image = models.TextField(blank=True) # URL изображения 
 
     class Meta:
         db_table = 'Personalities'

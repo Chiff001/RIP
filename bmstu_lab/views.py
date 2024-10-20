@@ -3,7 +3,7 @@ from bmstu_lab.models import *
 import datetime
 
 def GetPersonalities(request):
-    personalities_name = request.POST.get("personalities-name")
+    personalities_name = request.GET.get("personalities-name")
     printed_count = 0
     selected_company_id = 0
     selected_company = Company.objects.filter(status=1)

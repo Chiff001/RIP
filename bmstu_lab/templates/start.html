@@ -14,7 +14,7 @@
 	</header>
     <main>
         <h1 class="search-line">
-            <form action="/" method="post" enctype="multipart/form-data" class="search">
+            <form action="/" method="get" enctype="multipart/form-data" class="search">
                 {% csrf_token %}
                 <input name="personalities-name" type="text" value="{{personalities_name}}" class="search-input"><br><br>
                 <input type="submit" value="Поиск" class="search-button">
