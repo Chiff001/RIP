@@ -36,15 +36,24 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_staff = serializers.BooleanField(default=False, required=False)
+    is_superuser = serializers.BooleanField(default=False, required=False)
     class Meta:
-        model = AuthUser
-        fields = ["username", "password", "email"]
+        model = User
+        fields = ['username','password','is_staff','is_superuser']
+    
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        if 'password' in validated_data:
+            user.set_password(validated_data['password'])
+            user.save()
+        return user
 
 
 class EditUserSerializer(serializers.ModelSerializer):
     companies = CartSerializer(many=True, read_only=True)
     class Meta:
-        model = AuthUser
+        model = User
         fields = ["first_name", "last_name", "email", "password", "companies"]
 
 
