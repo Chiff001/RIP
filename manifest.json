@@ -1,0 +1,15 @@
+{
+    "name": "Просмотр физ/юр лиц",
+    "short_name": "Физ/Юр лица",
+    "start_url": "/RIP_node/",
+    "display": "standalone",
+    "background_color": "#fdfdfd",
+    "theme_color": "#db4938",
+    "orientation": "portrait-primary",
+    "icons": [
+      {
+        "src": "/logo.png",
+        "type": "image/png", "sizes": "512x512"
+      }
+    ]
+  }
