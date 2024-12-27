@@ -1,6 +1,7 @@
 import random
 from datetime import datetime, timedelta
 import uuid
+import hashlib
 
 from django.contrib.auth import authenticate
 from django.utils import timezone
@@ -16,6 +17,9 @@ from .permissions import *
 from .redis import session_storage
 from .serializers import *
 from .utils import identity_user, get_session
+
+import string
+import random
 
 
 def get_draft_company(request):
@@ -408,7 +412,7 @@ def register(request):
 
     user = serializer.save()
 
-    session_id = str(uuid.uuid4())
+    session_id = hash_log(user.username, user.password)
     session_storage.set(session_id, user.id)
 
     serializer = UserSerializer(user)
@@ -454,3 +458,22 @@ def update_user(request, user_id):
         user.save()
 
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def generate_salt(length=16):
+    """Генерация случайной соли."""
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
+
+
+def hash_log(username, password):
+    input_string = f"{id}{username}{password}"
+
+    if not salt:
+        salt = generate_salt()
+
+    combined = input_string + salt
+    
+    unique_hash = hash(combined)
+
+    return unique_hash
