@@ -1,9 +1,10 @@
-import random
-from datetime import datetime, timedelta
 import uuid
-import hashlib
+import math
+from datetime import timedelta
 
+import requests
 from django.contrib.auth import authenticate
+from django.core.paginator import Paginator
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from drf_yasg import openapi
@@ -17,9 +18,6 @@ from .permissions import *
 from .redis import session_storage
 from .serializers import *
 from .utils import identity_user, get_session
-
-import string
-import random
 
 
 def get_draft_company(request):
@@ -199,6 +197,11 @@ def update_personality_image(request, personality_id):
             'date_formation_end',
             openapi.IN_QUERY,
             type=openapi.TYPE_STRING
+        ),
+        openapi.Parameter(
+            'page',
+            openapi.IN_QUERY,
+            type=openapi.TYPE_NUMBER
         )
     ]
 )
@@ -208,6 +211,8 @@ def search_companys(request):
     status_id = int(request.GET.get("status", 0))
     date_formation_start = request.GET.get("date_formation_start")
     date_formation_end = request.GET.get("date_formation_end")
+    page = int(request.GET.get("page", 1))
+    page_size = 10
 
     companys = Company.objects.exclude(status__in=[1, 5])
 
@@ -224,9 +229,18 @@ def search_companys(request):
     if date_formation_end and parse_datetime(date_formation_end):
         companys = companys.filter(date_formation__lt=parse_datetime(date_formation_end) + timedelta(days=1))
 
-    serializer = CompanysSerializer(companys, many=True)
+    paginator = Paginator(companys, page_size)
 
-    return Response(serializer.data)
+    page = paginator.get_page(page)
+
+    serializer = CompanysSerializer(page.object_list, many=True)
+
+    data = {
+        "companys": serializer.data,
+        "total_pages": math.ceil(companys.count() / page_size)
+    }
+
+    return Response(data)
 
 
 @api_view(["GET"])
@@ -262,6 +276,21 @@ def update_company(request, company_id):
     if serializer.is_valid():
         serializer.save()
 
+    return Response(serializer.data)
+
+
+@api_view(["PUT"])
+@permission_classes([IsRemoteService])
+def update_accreditation(request, company_id):
+    if not Company.objects.filter(pk=company_id).exists():
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    company = Company.objects.get(pk=company_id)
+
+    company.accreditation = request.data.get("value")
+    company.save()
+
+    serializer = CompanySerializer(company, many=False)
     return Response(serializer.data)
 
 
@@ -305,7 +334,7 @@ def update_status_admin(request, company_id):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     if request_status == 3:
-        company.accreditation = random.randint(1, 2)
+        calculate_accreditation(company_id)
 
     company.status = request_status
     company.date_complete = timezone.now()
@@ -315,6 +344,14 @@ def update_status_admin(request, company_id):
     serializer = CompanySerializer(company)
 
     return Response(serializer.data)
+
+
+def calculate_accreditation(company_id):
+    data = {
+        "company_id": company_id
+    }
+
+    requests.post("http://remote_service:8080/calc_accreditation/", json=data, timeout=3)
 
 
 @api_view(["DELETE"])
@@ -412,7 +449,7 @@ def register(request):
 
     user = serializer.save()
 
-    session_id = hash_log(user.username, user.password)
+    session_id = str(uuid.uuid4())
     session_storage.set(session_id, user.id)
 
     serializer = UserSerializer(user)
@@ -458,22 +495,3 @@ def update_user(request, user_id):
         user.save()
 
     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-def generate_salt(length=16):
-    """Генерация случайной соли."""
-    characters = string.ascii_letters + string.digits
-    return ''.join(random.choice(characters) for _ in range(length))
-
-
-def hash_log(username, password):
-    input_string = f"{id}{username}{password}"
-
-    if not salt:
-        salt = generate_salt()
-
-    combined = input_string + salt
-    
-    unique_hash = hash(combined)
-
-    return unique_hash
