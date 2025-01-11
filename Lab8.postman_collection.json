@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "c0e19bd6-4429-4697-8b52-8593bfdc4ad1",
+		"name": "Lab8",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33669280"
+	},
+	"item": [
+		{
+			"name": "Обновить аккредитацию",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"value\": \"2\",\r\n    \"access_key\": 123\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/companys/12/update_accreditation/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"companys",
+						"12",
+						"update_accreditation",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Определить аккредитацию",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company_id\": 12\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/calc_accreditation/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calc_accreditation",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
